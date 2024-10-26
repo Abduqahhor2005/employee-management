@@ -32,6 +32,7 @@ public class EmployeeService(DataContext context) : IEmployeeService
     {
         var employees = from e in context.Employees
             join j in context.Journals on e.Id equals j.EmployeeId
+            where e.IsDeleted == false
             select new EmployeeWithJournal()
             {
                 Name = e.Name,
@@ -51,7 +52,8 @@ public class EmployeeService(DataContext context) : IEmployeeService
     {
         var employees = from e in context.Employees
             join j in context.Journals on e.Id equals j.EmployeeId
-            where j.Data.Month == DateTime.UtcNow.Month && j.Data.Year == DateTime.UtcNow.Year
+            where j.Data.Month == DateTime.UtcNow.Month && j.Data.Year == DateTime.UtcNow.Year 
+            && e.IsDeleted == false
             select new EmployeeWithJournal()
             {
                 Name = e.Name,
@@ -70,6 +72,7 @@ public class EmployeeService(DataContext context) : IEmployeeService
     public IEnumerable<EmployeeWithJournalCount> GetAllEmployeesWithJournalCount()
     {
         var employees = from e in context.Employees
+            where e.IsDeleted == false
             select new EmployeeWithJournalCount()
             {
                 Name = e.Name,
@@ -81,7 +84,7 @@ public class EmployeeService(DataContext context) : IEmployeeService
     public IEnumerable<EmployeesWithExperience> GetEmployeesWithExperience()
     {
         var employees = from e in context.Employees
-                .Where(e => e.Age > 30 && e.Journals.Count > 5)
+                .Where(e => e.Age > 30 && e.Journals.Count > 5 && e.IsDeleted == false)
             select new EmployeesWithExperience()
             {
                 Name = e.Name,
